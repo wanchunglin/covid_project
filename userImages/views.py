@@ -33,8 +33,8 @@ def addImage(request):
         print("===================================")
         
         print(request.FILES['imagefile'].name)
-        print(form.is_valid())
-        print(form.errors)
+        # print(form.is_valid())
+        # print(form.errors)
         if form.is_valid():
             imageuser = User.objects.get(userID = request.FILES['imagefile'].name[:-4])
             # print(imageuser)
