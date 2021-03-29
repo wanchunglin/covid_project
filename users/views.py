@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
 from .models import User
 import smtplib, ssl,json
 from datetime import datetime
@@ -11,11 +12,18 @@ verification = {}
 def index(request):
     return HttpResponse("Hello, world. You're at the users index.")
 
+@csrf_exempt
 def login(request):
-    return JsonResponse({'status': 'temp'})
+    if request.method == 'POST':
+        payload = json.loads(request.body.decode('utf-8'))
+        print("the payload is: ", payload)
+        try:
+            User.objects.get(userID = payload['userID'],password = payload['password'])
+            return JsonResponse({'status': 'ok'})
+        except ObjectDoesNotExist:
+            print("login failed")
+            return JsonResponse({'status': 'fail'})
 
-def logout(request):
-    return JsonResponse({'status': 'temp'})
 
 @csrf_exempt
 def register(request):
@@ -51,7 +59,7 @@ def register(request):
     else:
         print("not a post request")
         # return JsonResponse({'status': 'This is not a post request'})
-        return JsonResponse({"status":"failed"})
+        return JsonResponse({"status":"request failed"})
 
 @csrf_exempt
 def verify(request):
@@ -60,7 +68,10 @@ def verify(request):
         print("the payload is: ", payload)
 
         if verification[payload['userID']] == payload['verify']:
+            del verification[payload['userID']]
             return JsonResponse({'status': 'ok'})
+        else:
+            return JsonResponse({'status': 'fail'})
 
 def send_mail(receiver="", key=""):
     print("sending email")
@@ -69,7 +80,7 @@ def send_mail(receiver="", key=""):
     password = "yyh@RPITesing11042020"
     sender_email = "yyhrpitesting@gmail.com"
     message = """\
-    Subject: Hi there from NYCU epdemic project App\n
+    Subject: Hi there from NYCU App\n
 
     Your verification code is {key}""".format(key=key)
 
