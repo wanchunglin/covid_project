@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
 from .models import User
-import smtplib, ssl,json
+import smtplib, ssl, json
 from datetime import datetime
 from random import seed,randint
 
@@ -18,7 +18,9 @@ def login(request):
         payload = json.loads(request.body.decode('utf-8'))
         print("the payload is: ", payload)
         try:
-            User.objects.get(userID = payload['userID'],password = payload['password'])
+            getUser = User.objects.get(userID=payload['userID'], password=payload['password'])
+            if not getUser.verified:
+                return JsonResponse({'status': 'not verified'})
             return JsonResponse({'status': 'ok'})
         except ObjectDoesNotExist:
             print("login failed")
@@ -34,10 +36,10 @@ def register(request):
         print("the payload is: ", payload)
 
         newUser = User(userID=payload['userID'], 
-        userName=payload['userName'],
-        phone=payload['phone'],
-        email=payload['email'],
-        password = payload['password'])
+                        userName=payload['userName'],
+                        phone=payload['phone'],
+                        email=payload['email'],
+                        password=payload['password'])
 
         try:
             newUser.save(force_insert=True)
@@ -69,6 +71,10 @@ def verify(request):
 
         if verification[payload['userID']] == payload['verify']:
             del verification[payload['userID']]
+            verifiedUser = User.objects.get(userID=payload['userID'])
+            print(f'find user {verifiedUser}')
+            verifiedUser.verified = True
+            verifiedUser.save()
             return JsonResponse({'status': 'ok'})
         else:
             return JsonResponse({'status': 'fail'})
