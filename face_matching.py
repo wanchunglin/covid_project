@@ -7,6 +7,12 @@ from mtcnn.mtcnn import MTCNN
 from keras_vggface.vggface import VGGFace
 from keras_vggface.utils import preprocess_input
 
+<<<<<<< HEAD
+=======
+import mysql.connector
+
+
+>>>>>>> 34e8920 (add temperture function)
 # extract a single face from a given photograph
 def extract_face(filename, required_size=(224, 224)):
 	# load image from file
@@ -53,6 +59,7 @@ def is_match(known_embedding, candidate_embedding, thresh=0.5):
 # define filenames
 # filenames should be the photos we take at real time
 # maybe take a photo after raspberry pi scans a QRCode??
+<<<<<<< HEAD
 filenames = ['1.jpeg', '2.jpeg', '3.jpeg', '11.jpeg']
 # get embeddings file filenames
 embeddings = get_embeddings(filenames)
@@ -64,3 +71,31 @@ target_id = pickle.loads(......)
 # verify by comparing with the target
 print('start testing')
 is_match(target_id, embeddings[0])
+=======
+# filenames = ['1.jpeg']
+# get embeddings file filenames
+# embeddings = get_embeddings(filenames)
+# define the target embedding
+# get the faceEmbedding column from our database
+# and get the numpy array be pickle.loads()
+
+# target_id = pickle.loads(..)
+
+
+mydb = mysql.connector.connect(
+  host="140.113.79.132",
+  user="root",
+  password="YYHuang",
+  database="covid_project"
+)
+
+mycursor = mydb.cursor()
+
+mycursor.execute("SELECT * FROM covid_project.users_user")
+
+myresult = mycursor.fetchall()
+
+# verify by comparing with the target
+print('start testing')
+# is_match(target_id, embeddings[0])
+>>>>>>> 34e8920 (add temperture function)
