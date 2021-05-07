@@ -79,6 +79,33 @@ def verify(request):
         else:
             return JsonResponse({'status': 'fail'})
 
+def faceMatching(request):
+    if request.method == 'GET':
+        currentUser = request.GET.get('ID')
+        print("the ID is: ", currentUser)
+        currentTemperature = request.GET.get('temperature')
+        print("the temperature is: ", currentTemperature)
+        '''
+        currentFaceImage = request.Get.get('faceImage')
+        print("the faceImage is: ", currentFaceImage)
+        '''
+
+        # add face recognition here
+        
+        faceIsMatch = True
+        if faceIsMatch:
+            queryUser = User.objects.get(userID=currentUser)
+            print(f'find user {queryUser}')
+            response = {
+                        "userID": queryUser.userID,
+                        "userName": queryUser.userName,
+                        "phone": queryUser.phone,
+                        "email": queryUser.email
+                        }
+            return JsonResponse(response)
+        else:
+            return JsonResponse({"status": "Face is not matched"})
+
 def send_mail(receiver="", key=""):
     print("sending email")
     port = 465  # For SSL

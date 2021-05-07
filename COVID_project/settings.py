@@ -26,7 +26,7 @@ SECRET_KEY = 'czipl@)-es@x4r5-dcp@2)7v!(5lp&(ym5wm!0$s5fa9aebizf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["140.113.123.58" ,"127.0.0.1","localhost"]
+ALLOWED_HOSTS = ["140.113.79.132" ,"127.0.0.1","localhost"]
 
 #for https
 SESSION_COOKIE_SECURE = False
@@ -78,7 +78,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'COVID_project.wsgi.application'
 
 
-# Database
+# base
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'covid_project', # 目標資料庫的名稱
         'USER': 'root', # 資料庫帳號
-        'PASSWORD': '', # 資料庫密碼
+        'PASSWORD': 'YYHuang', # 資料庫密碼
         'HOST': 'localhost', # 主機位置，可以先測本地localhost
         'PORT': '3306', # 設定連接埠
     }
