@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from .models import User
-import smtplib, ssl, json
+import smtplib, ssl, json, time
 from datetime import datetime
 from random import seed,randint
 from userImages.models import Image as userImage
@@ -90,35 +92,52 @@ def verify(request):
         else:
             return JsonResponse({'status': 'fail'})
 
+@csrf_exempt
 def faceMatching(request):
-    if request.method == 'GET':
-        currentUser = request.GET.get('ID')
-        print("the ID is: ", currentUser)
-        currentTemperature = request.GET.get('temperature')
-        print("the temperature is: ", currentTemperature)
-        currentFaceImage = request.GET.get('faceImage')
-        print("the faceImage is: ", currentFaceImage)
-
-        # face recognition
-        # get faceEmbedding from table
-        target_embedding = userImage.objects.get(user=currentUser).faceEmbedding
-        faceIsMatch = performFaceRecognition(target=target_embedding, inputImg=currentFaceImage)
-        faceIsMatch = True
-        if faceIsMatch:
-            queryUser = User.objects.get(userID=currentUser)
-            response = {
-                        "userID": queryUser.userID,
-                        "userName": queryUser.userName,
-                        "phone": queryUser.phone,
-                        "email": queryUser.email
-                        }
-            return JsonResponse(response)
-        else:
-            return JsonResponse({"status": "Face is not matched"})
+	if request.method == 'POST':
+		'''
+		try:
+			ID = request.POST.get('ID')
+			print("ID is ", ID)
+			fileName = request.POST.get('faceImage')
+			print("fileName is ", fileName)
+			temperature = request.POST.get('temperature')
+			print("temperature is ", temperature)
+			imageFile = request.FILES.get('imagefile')
+			print("imageFile is ", imageFile)
+		except:
+			print("exception happens")
+		'''
+		ID = request.POST.get('ID')
+		print("ID is ", ID)
+		temperature = request.POST.get('temperature')
+		print("temperature is ", temperature)
+		imageFile = request.FILES.get('imagefile')
+		print("imageFile is ", imageFile)
+		fileName = default_storage.save('face_recognition/'+imageFile.name, ContentFile(imageFile.read()))
+		print("fileName is ", fileName)
+		
+		# face recognition
+		# get faceEmbedding from table
+		time.sleep(0.5)
+		target_embedding = userImage.objects.get(user=ID).faceEmbedding
+		faceIsMatch = performFaceRecognition(target=target_embedding, inputImg=fileName)
+		if faceIsMatch:
+			queryUser = User.objects.get(userID=ID)
+			response = {
+						"userID": queryUser.userID,
+						"userName": queryUser.userName,
+						"phone": queryUser.phone,
+						"email": queryUser.email,
+						"temperature": temperature
+						}
+			return JsonResponse(response)
+		else:
+			return JsonResponse({"status": "Face is not matched"})
 
 def performFaceRecognition(target, inputImg):
     # filenames should be the photos we take at real time
-    filenames = ['test.jpg']
+    filenames = ['media/'+inputImg]
     # get embeddings file filenames
     embeddings = get_embeddings(filenames)
     # define the target embedding
@@ -171,8 +190,10 @@ def is_match(known_embedding, candidate_embedding, thresh=0.5):
     print("Score is ", score)
     if score <= thresh:
         print('>face is a Match (%.3f <= %.3f)' % (score, thresh))
+        return True
     else:
         print('>face is NOT a Match (%.3f > %.3f)' % (score, thresh))
+        return False
 
 def send_mail(receiver="", key=""):
     print("sending email")
