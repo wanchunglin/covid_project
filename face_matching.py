@@ -6,6 +6,7 @@ from scipy.spatial.distance import cosine
 from mtcnn.mtcnn import MTCNN
 from keras_vggface.vggface import VGGFace
 from keras_vggface.utils import preprocess_input
+import pickle
 
 # extract a single face from a given photograph
 def extract_face(filename, required_size=(224, 224)):
@@ -53,7 +54,7 @@ def is_match(known_embedding, candidate_embedding, thresh=0.5):
 # define filenames
 # filenames should be the photos we take at real time
 # maybe take a photo after raspberry pi scans a QRCode??
-filenames = ['1.jpeg', '2.jpeg', '3.jpeg', '11.jpeg']
+filenames = ['1.jpeg']
 # get embeddings file filenames
 embeddings = get_embeddings(filenames)
 # define the target embedding
