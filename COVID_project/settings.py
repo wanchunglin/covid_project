@@ -26,11 +26,9 @@ SECRET_KEY = 'czipl@)-es@x4r5-dcp@2)7v!(5lp&(ym5wm!0$s5fa9aebizf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-<<<<<<< HEAD
-ALLOWED_HOSTS = ["140.113.123.58" ,"127.0.0.1","localhost"]
-=======
-ALLOWED_HOSTS = ["140.113.79.132"]
->>>>>>> 34e8920 (add temperture function)
+
+ALLOWED_HOSTS = ["140.113.79.132" ,"127.0.0.1","localhost"]
+
 
 #for https
 SESSION_COOKIE_SECURE = False
@@ -42,10 +40,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'location.apps.LocationConfig',
     'userImages.apps.UserimagesConfig',
-<<<<<<< HEAD
-=======
-    'temperature.apps.TemperatureConfig',
->>>>>>> 34e8920 (add temperture function)
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,7 +80,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'COVID_project.wsgi.application'
 
 
-# Database
+# base
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
@@ -97,13 +91,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'covid_project', # 目標資料庫的名稱
         'USER': 'root', # 資料庫帳號
-<<<<<<< HEAD
-        'PASSWORD': '', # 資料庫密碼
-        'HOST': 'localhost', # 主機位置，可以先測本地localhost
-=======
         'PASSWORD': 'YYHuang', # 資料庫密碼
         'HOST': '127.0.0.1', # 主機位置，可以先測本地localhost
->>>>>>> 34e8920 (add temperture function)
         'PORT': '3306', # 設定連接埠
     }
 }
