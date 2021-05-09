@@ -6,6 +6,11 @@ from scipy.spatial.distance import cosine
 from mtcnn.mtcnn import MTCNN
 from keras_vggface.vggface import VGGFace
 from keras_vggface.utils import preprocess_input
+<<<<<<< HEAD
+=======
+import pickle
+
+>>>>>>> ac741ab04c63c715f41dc2c5943da666e9667858
 import mysql.connector
 
 
@@ -67,6 +72,8 @@ target_id = pickle.loads(......)
 # verify by comparing with the target
 print('start testing')
 is_match(target_id, embeddings[0])
+
+
 # filenames = ['1.jpeg']
 # get embeddings file filenames
 # embeddings = get_embeddings(filenames)
@@ -92,4 +99,8 @@ myresult = mycursor.fetchall()
 
 # verify by comparing with the target
 print('start testing')
+
 # is_match(target_id, embeddings[0])
+
+
+

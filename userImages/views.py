@@ -61,7 +61,7 @@ def addImage(request):
         if form.is_valid():
             imageuser = User.objects.get(userID=request.FILES['imagefile'].name[:-4])
             # print(imageuser)
-            newimage = userImage(info=imageuser, imagefile=request.FILES['imagefile'])
+            newimage = userImage(user=imageuser, imagefile=request.FILES['imagefile'])
             
             newimage.faceEmbedding = getFaceEmbedding(request.FILES['imagefile'])
 
@@ -72,15 +72,16 @@ def addImage(request):
     else:
         return JsonResponse({"status":"not a post request"})
 
+# just for testing purpose
 def checkFaceEmbedding(request):
     if request.method == 'GET':
         payload = json.loads(request.body.decode('utf-8'))
-        getImage = userImage.objects.get(info=payload['userID'])
+        getImage = userImage.objects.get(user=payload['userID'])
         embeddingArray = pickle.loads(getImage.faceEmbedding)
         print(f'the embedding array has shape {embeddingArray.shape}')
         return JsonResponse({"status":"ok"})
     else:
-        return JsonResponse({"status":"not a post request"})
+        return JsonResponse({"status":"not a get request"})
 
 def getFaceEmbedding(file):
     # extract faces

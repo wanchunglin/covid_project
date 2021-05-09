@@ -26,15 +26,7 @@ SECRET_KEY = 'czipl@)-es@x4r5-dcp@2)7v!(5lp&(ym5wm!0$s5fa9aebizf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-ALLOWED_HOSTS = ["140.113.123.58" ,"127.0.0.1","localhost"]
-=======
-ALLOWED_HOSTS = ["140.113.79.132"]
->>>>>>> 34e8920 (add temperture function)
-=======
-ALLOWED_HOSTS = ["140.113.79.132"]
->>>>>>> 34e8920 (add temperture function)
+ALLOWED_HOSTS = ["140.113.79.132" ,"127.0.0.1","localhost"]
 
 #for https
 SESSION_COOKIE_SECURE = False
@@ -86,7 +78,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'COVID_project.wsgi.application'
 
 
-# Database
+# base
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
