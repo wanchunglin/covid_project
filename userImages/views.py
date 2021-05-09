@@ -40,7 +40,7 @@ def showImage(request):
 @csrf_exempt
 def addImage(request):
     if request.method == 'POST':
-<<<<<<< HEAD
+
         form = ImageForm(request.POST, request.FILES)
         # print(f'request payload is {request.payload}')
         print(f'request file is {request.FILES}')
@@ -49,7 +49,6 @@ def addImage(request):
         print(request.FILES['imagefile'].name)
         # print(form.is_valid())
         # print(form.errors)
-=======
         form = ImageForm(request.POST,request.FILES)
 
         print(f'request file is {request.FILES}')
@@ -58,7 +57,7 @@ def addImage(request):
         print(request.FILES['imagefile'].name)
         print(form.is_valid())
         print(form.errors)
->>>>>>> 34e8920 (add temperture function)
+
         if form.is_valid():
             imageuser = User.objects.get(userID=request.FILES['imagefile'].name[:-4])
             # print(imageuser)
