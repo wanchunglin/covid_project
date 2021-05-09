@@ -23,13 +23,6 @@ urlpatterns = [
 	path('users/', include('users.urls')),
 	path('location/', include('location.urls')),
     path('admin/', admin.site.urls),
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    path('temperature/',include('temperature.urls'))
->>>>>>> 34e8920 (add temperture function)
-=======
-    path('temperature/',include('temperature.urls'))
->>>>>>> 34e8920 (add temperture function)
+
 
 ]+ static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
