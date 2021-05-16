@@ -26,6 +26,7 @@ SECRET_KEY = 'czipl@)-es@x4r5-dcp@2)7v!(5lp&(ym5wm!0$s5fa9aebizf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = ["140.113.79.132" ,"127.0.0.1","localhost"]
 
 #for https
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'COVID_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'covid_project_html').replace('\\', '/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,17 +123,21 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Taipei'
 
-USE_I18N = True
+USE_I18N = False
 
-USE_L10N = True
+USE_L10N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'covid_project_html/static'),
+]
 
 MEDIA_ROOT= os.path.join(BASE_DIR, 'media/')
 MEDIA_URL= "/media/"
+# DEFAULT_FILE_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
