@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from .models import ED, EE
+from location.models import ED, EE, BOAI
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from users.models import User
