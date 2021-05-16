@@ -5,7 +5,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from .models import User
-import smtplib, ssl, json, time
+from location.models import ED, EE, BOAI
+
+import smtplib, ssl, json, time, pickle
 from datetime import datetime
 from random import seed,randint
 from userImages.models import Image as userImage
@@ -18,9 +20,9 @@ from scipy.spatial.distance import cosine
 from mtcnn.mtcnn import MTCNN
 from keras_vggface.vggface import VGGFace
 from keras_vggface.utils import preprocess_input
-import pickle
 
 verification = {}
+
 
 def index(request):
     return HttpResponse("Hello, world. You're at the users index.")
@@ -94,46 +96,63 @@ def verify(request):
 
 @csrf_exempt
 def faceMatching(request):
-	if request.method == 'POST':
-		'''
-		try:
-			ID = request.POST.get('ID')
-			print("ID is ", ID)
-			fileName = request.POST.get('faceImage')
-			print("fileName is ", fileName)
-			temperature = request.POST.get('temperature')
-			print("temperature is ", temperature)
-			imageFile = request.FILES.get('imagefile')
-			print("imageFile is ", imageFile)
-		except:
-			print("exception happens")
-		'''
-		ID = request.POST.get('ID')
-		print("ID is ", ID)
-		temperature = request.POST.get('temperature')
-		print("temperature is ", temperature)
-		imageFile = request.FILES.get('imagefile')
-		print("imageFile is ", imageFile)
-		fileName = default_storage.save('face_recognition/'+imageFile.name, ContentFile(imageFile.read()))
-		print("fileName is ", fileName)
-		
-		# face recognition
-		# get faceEmbedding from table
-		time.sleep(0.5)
-		target_embedding = userImage.objects.get(user=ID).faceEmbedding
-		faceIsMatch = performFaceRecognition(target=target_embedding, inputImg=fileName)
-		if faceIsMatch:
-			queryUser = User.objects.get(userID=ID)
-			response = {
-						"userID": queryUser.userID,
-						"userName": queryUser.userName,
-						"phone": queryUser.phone,
-						"email": queryUser.email,
-						"temperature": temperature
-						}
-			return JsonResponse(response)
-		else:
-			return JsonResponse({"status": "Face is not matched"})
+    keylocation = {"EE": EE(),"ED": ED(),"BOAI":BOAI()}
+    if request.method == 'POST':
+        ID = request.POST.get('ID')
+        print("ID is ", ID)
+        temperature = request.POST.get('temperature')
+        print("temperature is ", temperature)
+        newArrive = keylocation[request.POST.get('location')]
+        imageFile = request.FILES.get('imagefile')
+        print("imageFile is ", imageFile)
+        fileName = default_storage.save('face_recognition/' + ID + ".jpg", ContentFile(imageFile.read()))
+        print("fileName is ", fileName)
+        
+        # face recognition
+        # get faceEmbedding from table
+        time.sleep(0.5)
+        queryUser = User.objects.get(userID=ID)
+        target_embedding = userImage.objects.get(user=queryUser).faceEmbedding
+        faceIsMatch = performFaceRecognition(target=target_embedding, inputImg=fileName)
+        if faceIsMatch:
+            newArrive.userID = queryUser
+            newArrive.temp = float(temperature)
+            newArrive.save()
+            arrinfo = {}
+            for e in EE.objects.filter(userID = queryUser):
+                arrinfo[e.arriveTime.strftime("%Y/%m/%d %H:%M:%S")] = "EE"
+            for e in ED.objects.filter(userID = queryUser):
+                arrinfo[e.arriveTime.strftime("%Y/%m/%d %H:%M:%S")] = "ED"
+            for e in BOAI.objects.filter(userID = queryUser):
+                arrinfo[e.arriveTime.strftime("%Y/%m/%d %H:%M:%S")] = "BOAI"
+            sortarrinfo = sorted(arrinfo.items(), key=lambda x:x[0],reverse = True)
+            print(sortarrinfo)
+            
+            response = {"status":"success",
+                    "userID": queryUser.userID,
+                    "userName": queryUser.userName,
+                    "phone": queryUser.phone,
+                    "temperature":temperature,
+                    "time": sortarrinfo[0][0]
+                    }
+            for x in range(1,5):
+                try:
+                    c = sortarrinfo[x]
+                    response["loc" + str(x)] = c[0] + "-" + c[1]
+                except :
+                    response["loc" + str(x)] = ""
+            return JsonResponse(response)
+        else:
+            response = {"status":"not matched",
+                    "userID": " ",
+                    "userName": queryUser.userName,
+                    "phone": " ",
+                    "temperature":temperature,
+                    "time": datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+                    }
+            return JsonResponse(response)
+
+
 
 def performFaceRecognition(target, inputImg):
     # filenames should be the photos we take at real time
